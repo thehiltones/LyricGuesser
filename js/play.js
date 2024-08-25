@@ -171,7 +171,7 @@ const initialize = () => {
     };
     let song = findGetParameter("song");
     if (!HILTONES_INDEX.includes(song)) {
-        song = Math.random() * HILTONES_INDEX.length;
+        song = Math.floor(Math.random()) * HILTONES_INDEX.length;
     }
     xhttp.open("GET", BASE_URL + song, true);
     xhttp.send();
