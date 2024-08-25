@@ -124,7 +124,6 @@ const initialize = () => {
 
             let titleDiv = document.querySelector(".title");
             for (const word of title.split(/\s+/)) {
-                console.log(word);
                 let div = document.createElement("div");
                 div.classList.add("word");
                 titleDiv.appendChild(div);
