@@ -1,3 +1,6 @@
+import { HILTONES_INDEX, BASE_URL } from "/js/types.js"
+import { Matcher } from "/js/Matcher.js"
+
 let n_found = 0
 let matcher;
 
@@ -24,9 +27,7 @@ const handleGuess = function(exact_words, indices, give_up) {
             words[index].style.fontSize = `${size}em`;
         }
     }
-    const score = document.querySelector("#score");
-    let n_total = words.length;
-    score.innerHTML = (`${n_found}/${n_total}`);
+    updateScore();
 }
 
 const inputHandler = function(e) {
@@ -35,18 +36,6 @@ const inputHandler = function(e) {
         let exactWords = matcher.fetch_spelling(indices);
         handleGuess(exactWords, indices, false)
     }
-    // let xhttp = new XMLHttpRequest();
-    // xhttp.onreadystatechange = function() {
-    //     if (this.readyState == 4 && this.status == 200) {
-    //         let exact_words = JSON.parse(this.responseText)['words'];
-    //         let indices = JSON.parse(this.responseText)['indices'];
-    //         if (indices.length > 0) {
-    //             handleGuess(exact_words, indices, false);
-    //         }
-    //     }
-    // };
-    // xhttp.open("GET", "/guess?word="+e.target.value, true);
-    // xhttp.send();
 }
 
 const giveUp = function() {
@@ -55,19 +44,6 @@ const giveUp = function() {
         let exactWords = matcher.fetch_spelling(indices);
         handleGuess(exactWords, indices, true);
     }
-    // let xhttp = new XMLHttpRequest();
-    // xhttp.onreadystatechange = function() {
-    //     if (this.readyState == 4 && this.status == 200) {
-    //         let exact_words = JSON.parse(this.responseText)['words'];
-    //         let indices = JSON.parse(this.responseText)['indices'];
-    //         if (indices.length > 0) {
-    //             handleGuess(exact_words, indices, true);
-    //         }
-    //     }
-    // };
-    // n_found = 0
-    // xhttp.open("GET", "/give_up", true);
-    // xhttp.send();
 }
 
 const clearAnimation = () => {
@@ -77,8 +53,8 @@ const clearAnimation = () => {
     guess.style.animation = "";
 }
 
-function findGetParameter(parameterName) {
-    var result = null,
+const findGetParameter = (parameterName) => {
+    let result = null,
         tmp = [];
     location.search
         .substr(1)
@@ -88,6 +64,20 @@ function findGetParameter(parameterName) {
           if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
         });
     return result;
+}
+
+const getNewLyricsBlock = () => {
+    let lyricBlock = document.createElement("div");
+    lyricBlock.classList.add("words");
+    lyricBlock.classList.add("lyrics");
+    return lyricBlock;
+}
+
+const updateScore = () => {
+    let words = document.querySelectorAll(".word");
+    const score = document.querySelector("#score");
+    let n_total = words.length;
+    score.innerHTML = (`${n_found}/${n_total}`);
 }
 
 const initialize = () => {
@@ -123,22 +113,17 @@ const initialize = () => {
             }
 
             let titleDiv = document.querySelector(".title");
-            for (const word of title.split(/\s+/)) {
+            for (let i = 0; i < title.split(/\s+/).length; i++) {
                 let div = document.createElement("div");
                 div.classList.add("word");
                 titleDiv.appendChild(div);
             }
-            let lyricBlock = document.createElement("div");
-            lyricBlock.classList.add("words");
-            lyricBlock.classList.add("lyrics");
-            // let lyricsDiv = document.querySelector(".lyrics");
+            let lyricBlock = getNewLyricsBlock();
             let main = document.querySelector("main");
             for (const line of body) {
                 if (line === "") {
                     main.appendChild(lyricBlock);
-                    lyricBlock = document.createElement("div");
-                    lyricBlock.classList.add("words");
-                    lyricBlock.classList.add("lyrics");
+                    lyricBlock = getNewLyricsBlock();
                     continue;
                 }
                 for (const word of line.split(/\s+/)) {
@@ -147,9 +132,7 @@ const initialize = () => {
                         let p = document.createElement("p");
                         p.innerHTML = "CHORUS";
                         main.appendChild(p);
-                        lyricBlock = document.createElement("div");
-                        lyricBlock.classList.add("words");
-                        lyricBlock.classList.add("lyrics");
+                        lyricBlock = getNewLyricsBlock();
                     }
                     else {
                         let div = document.createElement("div");
@@ -163,10 +146,7 @@ const initialize = () => {
             }
         }
 
-        let words = document.querySelectorAll(".word");
-        const score = document.querySelector("#score");
-        let n_total = words.length;
-        score.innerHTML = (`${n_found}/${n_total}`);
+        updateScore();
     };
     let song = findGetParameter("song");
     if (!HILTONES_INDEX.includes(song)) {

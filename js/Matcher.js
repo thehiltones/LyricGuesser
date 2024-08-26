@@ -1,10 +1,20 @@
+/**
+ * A class for tracking the lyrics of the song, determining is a given word
+ * has a match in the song, and tracking the guesses made.
+ */
 class Matcher {
+    /**
+     * Lowercase and remove non-alphanumeric characters.
+     * e.g., 'Hi!' becomes 'hi'
+     */
     static sanitize(word) {
-        // """Lowercase and remove non-alphanumeric characters.
-        //     e.g., 'Hi!' becomes 'hi' """
         return word.toLowerCase().replace(/[^A-Za-z]+/g, "");
     }
 
+    /**
+     * Maps words that are equivalent to each other, so that the users don't have to
+     * guess the precise spelling used for some of these weird words.
+     */
     static EQUIVALENCES = {
         "ho": "hohohod",
         "every": "evry",
@@ -20,9 +30,6 @@ class Matcher {
         "fiddle": "fiddleeeioh",
         "tippy": "tippytoeing",
         "tick": "ticktock",
-        "ticky": "tickytacky",
-        "ticky": "tikki",
-        "ticky": "taki",
         "overflowing": "oerflowing",
         "given": "givn",
         "heavens": "heavns",
@@ -34,6 +41,10 @@ class Matcher {
         "offering": "offring"
     }
 
+    /**
+     * @param {String} title 
+     * @param {Array} body 
+     */
     constructor(title, body) {
         this.title = [];
         this.words = [];
@@ -50,10 +61,8 @@ class Matcher {
                 this.words.push(title_words[i]);
             }
         }
-        // let offset = 0;
         for (const line of body) {
             if (line === "") {
-                // offset += 1;
                 continue;
             }
             let line_words = line.split(/\s+/);
@@ -63,7 +72,6 @@ class Matcher {
                     continue;
                 }
                 else if (line_words[i] === "CHORUS") {
-                    // offset += 1;
                     continue;
                 }
                 else {
@@ -77,14 +85,16 @@ class Matcher {
         }
         this.foundWords = new Set();
     }
-
+    /**
+     * Return a list of indexes for the word if it hasn't been guessed before.
+     * Return empty list if it's already been guessed or isn't in the body.
+     * @param {String} word 
+     * @returns {Array}
+     */
     guess(word) {
-//         """Return a list of indexes for the word if it hasn't been guessed before.
-//         Return empty list if it's already been guessed or isn't in the body."""
         word = Matcher.sanitize(word);
         let equalent_matches = [];
         if (word in Matcher.EQUIVALENCES) {
-            console("Has equivalence");
             equalent_matches = this.guess(Matcher.EQUIVALENCES[word]);
         } 
         if (this.foundWords.has(word)) {
@@ -99,22 +109,24 @@ class Matcher {
         }
     }
 
+    /**
+     * Mark all words as found and return the indices of all the words
+     * @returns {Array}
+     */
     give_up() {
-        // //  """Return all indices"""
-        // let all_indices = new Set();
-        // for (let word of Object.keys(this.word_locations)) {
-        //     this.foundWords.add(word);
-        //     for (let i = 0; i < this.word_locations[word].length; i++) {
-        //         all_indices.add(this.word_locations[word][i]);
-        //     }
-        // }
-        // return Array.from(all_indices)
+        for (const word of this.words) {
+            this.foundWords.add(Matcher.sanitize(word));
+        }
         return [...Array(this.words.length).keys()]
     }
 
+    /**
+     * Return the exact spelling, i.e., the original capitalization and punctuation
+     * for the words at the given indices.
+     * @param {Array} indices 
+     * @returns {Array}
+     */
     fetch_spelling(indices) {
-        //         """Return the exact spelling, e.g., original capitalization and punctuation
-        //         for the words at the gvien indices."""
         indices = new Set(indices);
         let spellings = [];
         for (let i = 0; i < this.words.length; i++) {
@@ -125,9 +137,14 @@ class Matcher {
         return spellings
     }
 
+    /**
+     * Return the full lyrics as an array of words.
+     * @returns {Array} The full lyrics
+     */
     get_lyrics() {
-        //         """Return the full body as a list of words"""
         return this.words
     }
 
 }
+
+export { Matcher };

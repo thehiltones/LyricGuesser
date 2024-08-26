@@ -1,4 +1,8 @@
-const HILTONES_INDEX = ["000.json", "001.json", "002.json", "003.json",
+// https://www.freecodecamp.org/news/how-to-use-es6-modules-and-why-theyre-important-a9b20b480773/
+
+// maybe rename types.js to globals.js?
+
+export const HILTONES_INDEX = ["000.json", "001.json", "002.json", "003.json",
     "004.json", "005.json", "006.json", "007.json", "008.json", "009.json",
     "010.json", "011.json", "012.json", "013.json", "014.json", "015.json",
     "016.json", "017.json", "018.json", "019.json", "020.json", "021.json",
@@ -15,4 +19,4 @@ const HILTONES_INDEX = ["000.json", "001.json", "002.json", "003.json",
     "082.json", "083.json", "084.json", "085.json", "086.json", "087.json",
     "088.json", "089.json", "090.json"];
 
-const BASE_URL = "https://raw.githubusercontent.com/thehiltones/LyricGuesser/main/lyrics/hiltones/"
+export const BASE_URL = "https://raw.githubusercontent.com/thehiltones/LyricGuesser/main/lyrics/hiltones/"

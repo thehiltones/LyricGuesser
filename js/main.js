@@ -1,3 +1,5 @@
+import { HILTONES_INDEX, BASE_URL } from "/js/types.js"
+
 const list_songs = function() {
     let leftList = document.querySelector("#left-list");
     let rightList = document.querySelector("#right-list");
